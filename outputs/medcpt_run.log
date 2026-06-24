@@ -1,0 +1,15 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loaded ranking dataset: 2231 rows
+screening_label
+irrelevant    1938
+exclude        173
+include        120
+Name: count, dtype: int64
+Using device: cpu
+
+Loading query encoder: ncbi/MedCPT-Query-Encoder
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 5730.43it/s]
+Loading article encoder: ncbi/MedCPT-Article-Encoder
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 5311.21it/s]
+/opt/homebrew/Cellar/python@3.14/3.14.5/Frameworks/Python.framework/Versions/3.14/lib/python3.14/multiprocessing/resource_tracker.py:475: UserWarning: resource_tracker: There appear to be 1 leaked semaphore objects to clean up at shutdown: {'/loky-8591-bp3f71ga'}
+  warnings.warn(

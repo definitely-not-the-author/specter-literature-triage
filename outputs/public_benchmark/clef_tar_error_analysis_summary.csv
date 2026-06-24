@@ -1,0 +1,9 @@
+metric,value
+total_topics,20
+total_records,149671
+total_relevant,2515
+gained_relevant,343
+lost_relevant,112
+fp_top50,468
+fn_beyond100,1658
+net_gain_relevant,231

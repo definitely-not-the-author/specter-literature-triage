@@ -1,0 +1,4 @@
+method,average_precision,relevant_at_100,recall_at_100,rank_at_90_recall
+manual_specter_hybrid,0.5455162581158315,60,0.5,289
+tar_augmented_extratrees,0.6841708327852889,67,0.5583333333333333,245
+tar_tfidf_logreg,0.6298556722970923,62,0.5166666666666667,315

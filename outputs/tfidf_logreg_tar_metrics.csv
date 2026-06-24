@@ -1,0 +1,2 @@
+method,average_precision,precision_at_100,recall_at_100,relevant_at_100,rank_at_90_recall
+tar_tfidf_logreg,0.6298556722970923,0.62,0.5166666666666667,62,315

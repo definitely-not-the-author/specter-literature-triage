@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPECTER-Triage — Biomedical Systematic Review Screening</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface2: #334155;
+      --border: #475569;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --accent: #8b5cf6;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .app { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    header {
+      text-align: center;
+      padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+    header p { color: var(--text-muted); font-size: 14px; }
+    .tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 24px;
+      background: var(--surface);
+      padding: 4px;
+      border-radius: 8px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px 16px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .tab.active { background: var(--primary); color: white; }
+    .tab:hover:not(.active) { background: var(--surface2); color: var(--text); }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .card h2 { font-size: 18px; margin-bottom: 16px; }
+    .card h3 { font-size: 15px; margin-bottom: 12px; color: var(--text-muted); }
+    .grid { display: grid; gap: 16px; }
+    .grid-2 { grid-template-columns: 1fr 1fr; }
+    .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+    label { display: block; font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+    select, input, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    select:focus, input:focus, textarea:focus { border-color: var(--primary); }
+    textarea { resize: vertical; min-height: 100px; font-family: inherit; }
+    button {
+      padding: 10px 20px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: var(--primary-hover); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .score-display {
+      text-align: center;
+      padding: 24px;
+      background: var(--surface2);
+      border-radius: 8px;
+      margin-top: 16px;
+    }
+    .score-big { font-size: 48px; font-weight: 700; }
+    .score-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+    .interpretation {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .interp-high { background: rgba(34,197,94,0.15); color: var(--success); }
+    .interp-mid { background: rgba(245,158,11,0.15); color: var(--warning); }
+    .interp-low { background: rgba(239,68,68,0.15); color: var(--danger); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    tr:hover { background: var(--surface2); }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-include { background: rgba(34,197,94,0.2); color: var(--success); }
+    .badge-exclude { background: rgba(239,68,68,0.2); color: var(--danger); }
+    .bar-container { display: flex; align-items: center; gap: 8px; }
+    .bar { height: 8px; border-radius: 4px; transition: width 0.3s; }
+    .bar-positive { background: var(--danger); }
+    .bar-negative { background: var(--success); }
+    .metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+    .metric-card {
+      background: var(--surface2);
+      padding: 16px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .metric-value { font-size: 24px; font-weight: 700; }
+    .metric-label { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .feature-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .feature-name { width: 140px; font-size: 13px; text-align: right; }
+    .feature-fill { height: 20px; border-radius: 4px; background: var(--accent); min-width: 2px; transition: width 0.5s; }
+    .feature-value { font-size: 12px; color: var(--text-muted); width: 60px; }
+    .loading { text-align: center; padding: 40px; color: var(--text-muted); }
+    .empty { text-align: center; padding: 40px; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div id="app" class="app">
+    <header>
+      <h1>SPECTER-Triage</h1>
+      <p>Multi-Objective Semantic-Lexical Reranking for Biomedical Systematic Review Screening</p>
+    </header>
+
+    <div class="tabs">
+      <button class="tab" :class="{ active: tab === 'score' }" @click="tab = 'score'">Score Paper</button>
+      <button class="tab" :class="{ active: tab === 'ranking' }" @click="tab = 'ranking'; loadRanking()">Ranking</button>
+      <button class="tab" :class="{ active: tab === 'features' }" @click="tab = 'features'; loadFeatures()">Feature Importance</button>
+      <button class="tab" :class="{ active: tab === 'ablation' }" @click="tab = 'ablation'; loadAblation()">Ablation</button>
+      <button class="tab" :class="{ active: tab === 'stats' }" @click="tab = 'stats'; loadStats()">Statistics</button>
+    </div>
+
+    <!-- Score Tab -->
+    <div v-if="tab === 'score'">
+      <div class="card">
+        <h2>Score a Paper</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+          Enter a paper title and abstract to get a relevance score from the selected model.
+        </p>
+        <div class="grid grid-2">
+          <div>
+            <label>Model</label>
+            <select v-model="scoreModel">
+              <option v-for="m in models" :value="m.name">{{ m.display_name }} (AP: {{ m.ap || 'N/A' }})</option>
+            </select>
+          </div>
+        </div>
+        <div style="margin-top: 16px;">
+          <label>Title</label>
+          <input v-model="scoreTitle" placeholder="e.g., Mutational signature analysis using deep learning..." />
+        </div>
+        <div style="margin-top: 12px;">
+          <label>Abstract</label>
+          <textarea v-model="scoreAbstract" placeholder="Paste the paper abstract here..."></textarea>
+        </div>
+        <div style="margin-top: 16px;">
+          <button @click="scorePaper" :disabled="!scoreTitle || !scoreAbstract || scoring">
+            {{ scoring ? 'Scoring...' : 'Get Relevance Score' }}
+          </button>
+        </div>
+        <div v-if="scoreResult" class="score-display">
+          <div class="score-big" :style="{ color: scoreResult.relevance_score > 0.7 ? 'var(--success)' : scoreResult.relevance_score > 0.4 ? 'var(--warning)' : 'var(--danger)' }">
+            {{ (scoreResult.relevance_score * 100).toFixed(1) }}%
+          </div>
+          <div class="score-label">Relevance Score — {{ scoreResult.model_display }}</div>
+          <div class="interpretation" :class="scoreResult.relevance_score > 0.7 ? 'interp-high' : scoreResult.relevance_score > 0.4 ? 'interp-mid' : 'interp-low'">
+            {{ scoreResult.interpretation }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ranking Tab -->
+    <div v-if="tab === 'ranking'">
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h2>Ranking Overview</h2>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <label style="margin: 0;">Model:</label>
+            <select v-model="rankingModel" @change="loadRanking()" style="width: 200px;">
+              <option v-for="m in models" :value="m.name">{{ m.display_name }}</option>
+            </select>
+          </div>
+        </div>
+        <div v-if="rankingLoading" class="loading">Loading ranking...</div>
+        <table v-else-if="rankingData.length">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Title</th>
+              <th>Score</th>
+              <th>Label</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="r in rankingData" :key="r.record_id">
+              <td>{{ r.rank }}</td>
+              <td style="max-width: 500px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ r.title }}</td>
+              <td>{{ (r.relevance_score * 100).toFixed(1) }}%</td>
+              <td>
+                <span v-if="r.is_relevant === 1" class="badge badge-include">Include</span>
+                <span v-else class="badge badge-exclude">Exclude</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Feature Importance Tab -->
+    <div v-if="tab === 'features'">
+      <div class="card">
+        <h2>SHAP Feature Importance</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+          Mean absolute SHAP values for the ExtraTrees reranker. Higher values indicate stronger contribution to model decisions.
+        </p>
+        <div v-if="featureLoading" class="loading">Loading...</div>
+        <div v-else-if="featureData.length">
+          <div v-for="f in featureData" :key="f.feature" class="feature-bar">
+            <div class="feature-name">{{ f.display_name }}</div>
+            <div class="feature-fill" :style="{ width: (f.mean_abs_shap / maxShap * 100) + '%' }"></div>
+            <div class="feature-value">{{ f.mean_abs_shap.toFixed(3) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ablation Tab -->
+    <div v-if="tab === 'ablation'">
+      <div class="card">
+        <h2>Leave-One-Feature-Out Ablation</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+          Performance change when each feature is removed from the ExtraTrees reranker.
+          Baseline: AP = 0.615, Rel@100 = 65, Rank@90% = 268.
+        </p>
+        <div v-if="ablationLoading" class="loading">Loading...</div>
+        <table v-else-if="ablationData.length">
+          <thead>
+            <tr>
+              <th>Feature Removed</th>
+              <th>AP</th>
+              <th>ΔAP</th>
+              <th>Rel@100</th>
+              <th>ΔRel@100</th>
+              <th>Rank@90%</th>
+              <th>ΔRank@90%</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="a in ablationData" :key="a.feature_removed">
+              <td style="font-weight: 500;">{{ a.feature_removed }}</td>
+              <td>{{ a.ap.toFixed(3) }}</td>
+              <td :style="{ color: a.delta_ap > 0 ? 'var(--danger)' : a.delta_ap < 0 ? 'var(--success)' : 'var(--text-muted)' }">
+                {{ a.delta_ap > 0 ? '+' : '' }}{{ a.delta_ap.toFixed(3) }}
+              </td>
+              <td>{{ a.rel_at_100 }}</td>
+              <td :style="{ color: a.delta_rel_at_100 > 0 ? 'var(--danger)' : a.delta_rel_at_100 < 0 ? 'var(--success)' : 'var(--text-muted)' }">
+                {{ a.delta_rel_at_100 > 0 ? '+' : '' }}{{ a.delta_rel_at_100 }}
+              </td>
+              <td>{{ a.rank_at_90 }}</td>
+              <td :style="{ color: a.delta_rank_at_90 > 0 ? 'var(--danger)' : a.delta_rank_at_90 < 0 ? 'var(--success)' : 'var(--text-muted)' }">
+                {{ a.delta_rank_at_90 > 0 ? '+' : '' }}{{ a.delta_rank_at_90 }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Statistics Tab -->
+    <div v-if="tab === 'stats'">
+      <div class="card">
+        <h2>Bootstrap Confidence Intervals & P-Values</h2>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 16px;">
+          2,000-iteration paired bootstrap. *** p &lt; 0.01, ** p &lt; 0.05, * p &lt; 0.10.
+        </p>
+        <div v-if="statsLoading" class="loading">Loading...</div>
+        <table v-else-if="statsData.length">
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Metric</th>
+              <th>Mean</th>
+              <th>95% CI</th>
+              <th>Δ vs Hybrid</th>
+              <th>p (Hybrid)</th>
+              <th>Δ vs TAR</th>
+              <th>p (TAR)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(s, i) in statsData" :key="i">
+              <td style="font-weight: 500;">{{ formatMethodName(s.method) }}</td>
+              <td>{{ s.metric }}</td>
+              <td>{{ typeof s.mean === 'number' ? s.mean.toFixed(3) : s.mean }}</td>
+              <td>[{{ s.ci_lower_95?.toFixed(3) }}, {{ s.ci_upper_95?.toFixed(3) }}]</td>
+              <td>{{ s.delta_vs_manual_specter_hybrid != null ? (s.delta_vs_manual_specter_hybrid > 0 ? '+' : '') + s.delta_vs_manual_specter_hybrid.toFixed(3) : '—' }}</td>
+              <td>{{ formatP(s.p_value_vs_manual_specter_hybrid) }}</td>
+              <td>{{ s.delta_vs_tar_tfidf_logreg != null ? (s.delta_vs_tar_tfidf_logreg > 0 ? '+' : '') + s.delta_vs_tar_tfidf_logreg.toFixed(3) : '—' }}</td>
+              <td>{{ formatP(s.p_value_vs_tar_tfidf_logreg) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, computed, onMounted } = Vue;
+
+    createApp({
+      setup() {
+        const API = 'http://localhost:8000';
+        const tab = ref('score');
+        const models = ref([]);
+
+        // Score
+        const scoreModel = ref('learned_extratrees');
+        const scoreTitle = ref('');
+        const scoreAbstract = ref('');
+        const scoreResult = ref(null);
+        const scoring = ref(false);
+
+        // Ranking
+        const rankingModel = ref('learned_extratrees');
+        const rankingData = ref([]);
+        const rankingLoading = ref(false);
+
+        // Features
+        const featureData = ref([]);
+        const featureLoading = ref(false);
+        const maxShap = computed(() => Math.max(...featureData.value.map(f => f.mean_abs_shap), 0.001));
+
+        // Ablation
+        const ablationData = ref([]);
+        const ablationLoading = ref(false);
+
+        // Stats
+        const statsData = ref([]);
+        const statsLoading = ref(false);
+
+        async function loadModels() {
+          try {
+            const res = await fetch(`${API}/models`);
+            models.value = await res.json();
+          } catch (e) {
+            console.error('Failed to load models:', e);
+          }
+        }
+
+        async function scorePaper() {
+          scoring.value = true;
+          scoreResult.value = null;
+          try {
+            const res = await fetch(`${API}/score`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                title: scoreTitle.value,
+                abstract: scoreAbstract.value,
+                model: scoreModel.value,
+              }),
+            });
+            scoreResult.value = await res.json();
+          } catch (e) {
+            console.error('Score failed:', e);
+          }
+          scoring.value = false;
+        }
+
+        async function loadRanking() {
+          rankingLoading.value = true;
+          try {
+            const res = await fetch(`${API}/ranking?model=${rankingModel.value}&top_k=50`);
+            const data = await res.json();
+            rankingData.value = data.records || [];
+          } catch (e) {
+            console.error('Ranking failed:', e);
+          }
+          rankingLoading.value = false;
+        }
+
+        async function loadFeatures() {
+          if (featureData.value.length) return;
+          featureLoading.value = true;
+          try {
+            const res = await fetch(`${API}/feature-importance`);
+            featureData.value = await res.json();
+          } catch (e) {
+            console.error('Features failed:', e);
+          }
+          featureLoading.value = false;
+        }
+
+        async function loadAblation() {
+          if (ablationData.value.length) return;
+          ablationLoading.value = true;
+          try {
+            const res = await fetch(`${API}/ablation`);
+            ablationData.value = await res.json();
+          } catch (e) {
+            console.error('Ablation failed:', e);
+          }
+          ablationLoading.value = false;
+        }
+
+        async function loadStats() {
+          if (statsData.value.length) return;
+          statsLoading.value = true;
+          try {
+            const res = await fetch(`${API}/statistics`);
+            statsData.value = await res.json();
+          } catch (e) {
+            console.error('Stats failed:', e);
+          }
+          statsLoading.value = false;
+        }
+
+        function formatMethodName(name) {
+          const map = {
+            'manual_specter_hybrid': 'SPECTER-hybrid',
+            'tar_tfidf_logreg': 'TAR TF-IDF+LogReg',
+            'learned_extratrees': 'ExtraTrees',
+            'learned_rf': 'Random Forest',
+            'learned_nb': 'Naive Bayes',
+            'learned_logistic': 'Logistic',
+            'learned_gb': 'GBM',
+            'learned_hgb': 'HGBM',
+            'learned_adaboost': 'AdaBoost',
+            'learned_svm_linear': 'SVM',
+          };
+          return map[name] || name;
+        }
+
+        function formatP(p) {
+          if (p == null) return '—';
+          if (p < 0.001) return '<0.001***';
+          if (p < 0.01) return p.toFixed(3) + '**';
+          if (p < 0.05) return p.toFixed(3) + '*';
+          return p.toFixed(3);
+        }
+
+        onMounted(() => {
+          loadModels();
+        });
+
+        return {
+          tab, models,
+          scoreModel, scoreTitle, scoreAbstract, scoreResult, scoring, scorePaper,
+          rankingModel, rankingData, rankingLoading, loadRanking,
+          featureData, featureLoading, maxShap, loadFeatures,
+          ablationData, ablationLoading, loadAblation,
+          statsData, statsLoading, loadStats,
+          formatMethodName, formatP,
+        };
+      },
+    }).mount('#app');
+  </script>
+</body>
+</html>

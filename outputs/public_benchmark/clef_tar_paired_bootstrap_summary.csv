@@ -1,0 +1,8 @@
+Method Statistics
+method,mean_ap,std_ap,min_ap,max_ap,n_topics
+TAR-Augmented ExtraTrees,0.4603172296015142,0.21186466240708077,7.874015748031496e-05,0.7590367184799698,20
+TAR TF-IDF+LogReg,0.4600677400316708,0.21323729712672834,7.874015748031496e-05,0.7012607124001656,20
+
+Bootstrap Statistics
+comparison,mean_difference,ci_lower_95,ci_upper_95,p_value,p_value_display,significance,win_rate,win_rate_ci_lower,win_rate_ci_upper,n_topics,et_wins,tar_wins,ties
+ExtraTrees vs TAR,0.0003204873120381857,-0.014349037308193455,0.016493266480713552,0.497,0.4970,ns,0.401845,0.2,0.6,20,8,11,1

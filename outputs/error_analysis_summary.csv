@@ -1,0 +1,17 @@
+category,count,pct_of_total_relevant
+total_records,2231,
+total_relevant,120,1.0
+et_top100_relevant,67,0.5583333333333333
+hybrid_top100_relevant,60,0.5
+et_rank_at_90_recall,245,0.9
+fn_beyond_rank_at_90_recall,12,0.1
+fp_top100,33,
+et_vs_hybrid_gained_relevant,15,0.125
+et_vs_hybrid_lost_relevant,8,0.06666666666666667
+et_vs_hybrid_net_relevant_gain,7,0.058333333333333334
+et_hybrid_top100_overlap,76,
+tar_top100_relevant,62,0.5166666666666667
+et_vs_tar_gained_relevant,14,0.11666666666666667
+et_vs_tar_lost_relevant,9,0.075
+et_vs_tar_net_relevant_gain,5,0.041666666666666664
+et_tar_top100_overlap,73,
