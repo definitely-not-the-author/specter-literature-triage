@@ -1,0 +1,10 @@
+method,method_label,include,exclude,irrelevant
+keyword,Keyword,27,18,55
+tfidf,TF-IDF,52,17,31
+bm25,BM25,49,21,30
+minilm,MiniLM,55,16,29
+pubmedbert,PubMedBERT,27,26,47
+specter,SPECTER,48,12,40
+specter_hybrid,SPECTER-hybrid,60,11,29
+tar_tfidf_logreg,TAR TF-IDF+LogReg,62,15,23
+tar_augmented_extratrees,TAR-Augmented ExtraTrees,67,14,19

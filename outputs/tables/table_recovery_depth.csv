@@ -1,0 +1,10 @@
+method,method_label,rank_for_25_recall,screening_fraction_for_25_recall,rank_for_50_recall,screening_fraction_for_50_recall,rank_for_75_recall,screening_fraction_for_75_recall,rank_for_90_recall,screening_fraction_for_90_recall
+keyword,Keyword,120,0.054,270,0.121,594,0.266,934,0.419
+tfidf,TF-IDF,59,0.026,125,0.056,422,0.189,1002,0.449
+bm25,BM25,55,0.025,152,0.068,410,0.184,970,0.435
+minilm,MiniLM,40,0.018,110,0.049,205,0.092,392,0.176
+pubmedbert,PubMedBERT,110,0.049,228,0.102,499,0.224,797,0.357
+specter,SPECTER,57,0.026,119,0.053,218,0.098,325,0.146
+specter_hybrid,SPECTER-hybrid,47,0.021,99,0.044,187,0.084,289,0.13
+tar_tfidf_logreg,TAR TF-IDF+LogReg,39,0.017,97,0.043,175,0.078,315,0.141
+tar_augmented_extratrees,TAR-Augmented ExtraTrees,38,0.017,84,0.038,166,0.074,245,0.11

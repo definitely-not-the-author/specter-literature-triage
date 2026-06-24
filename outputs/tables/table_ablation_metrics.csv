@@ -1,0 +1,10 @@
+variant,weight_rq,weight_proposal,weight_keyword,average_precision,precision_at_25,precision_at_50,precision_at_100,recall_at_100,ndcg_at_100,relevant_found_at_100
+full_hybrid_original,0.65,0.1,0.25,0.546,0.6,0.64,0.6,0.5,0.603,60
+balanced,0.5,0.2,0.3,0.543,0.64,0.64,0.61,0.508,0.613,61
+rq_keyword,0.75,0.0,0.25,0.543,0.6,0.64,0.59,0.492,0.595,59
+semantic_heavy,0.75,0.15,0.1,0.52,0.6,0.56,0.55,0.458,0.57,55
+proposal_only,0.0,1.0,0.0,0.494,0.68,0.48,0.53,0.442,0.542,53
+keyword_heavy,0.45,0.1,0.45,0.475,0.56,0.5,0.53,0.442,0.539,53
+rq_proposal,0.8,0.2,0.0,0.475,0.52,0.5,0.5,0.417,0.51,50
+rq_only,1.0,0.0,0.0,0.462,0.52,0.5,0.48,0.4,0.487,48
+keyword_only,0.0,0.0,1.0,0.211,0.36,0.28,0.26,0.217,0.275,26

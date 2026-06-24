@@ -1,0 +1,10 @@
+method,average_precision,precision_at_25,precision_at_50,precision_at_100,recall_at_100,ndcg_at_100,relevant_found_at_100
+Keyword,0.212,0.36,0.28,0.27,0.225,0.282,27
+TF-IDF,0.381,0.52,0.52,0.52,0.433,0.513,52
+BM25,0.372,0.56,0.54,0.49,0.408,0.48,49
+MiniLM,0.539,0.68,0.74,0.55,0.458,0.597,55
+PubMedBERT,0.22,0.2,0.28,0.27,0.225,0.244,27
+SPECTER,0.462,0.52,0.5,0.48,0.4,0.487,48
+SPECTER-hybrid,0.546,0.6,0.64,0.6,0.5,0.603,60
+TAR TF-IDF+LogReg,0.63,0.84,0.76,0.62,0.517,0.68,62
+TAR-Augmented ExtraTrees,0.684,0.92,0.74,0.67,0.558,0.723,67

@@ -1,0 +1,23 @@
+{
+  "input": "outputs/ranking_scores.csv",
+  "output": "outputs/ranking_scores_with_learned_reranker.csv",
+  "metrics_output": "outputs/learned_reranker_metrics.csv",
+  "label_col": "is_relevant",
+  "feature_cols": [
+    "keyword_score",
+    "tfidf_score",
+    "bm25_score",
+    "minilm_score",
+    "pubmedbert_score",
+    "specter_score",
+    "specter_rq_similarity",
+    "specter_proposal_similarity",
+    "specter_hybrid_score",
+    "tar_tfidf_logreg_score"
+  ],
+  "manual_hybrid_col": "specter_hybrid_score",
+  "primary_model": "learned_logistic_specter_triage",
+  "n_splits": 5,
+  "random_state": 42,
+  "important_note": "Use learned_specter_triage_oof_score for honest retrospective evaluation. Use learned_specter_triage_full_score only for future prospective screening."
+}
