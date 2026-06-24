@@ -507,7 +507,7 @@ git add .gitattributes
 
 If you use SPECTER-Triage in your research, please cite:
 
-> definitely-not-the-author (2025). SPECTER-Triage: Multi-Objective Evaluation of Semantic-Lexical Reranking for Biomedical Systematic Review Triage.
+> definitely-not-the-author (2026). SPECTER-Triage: Multi-Objective Evaluation of Semantic-Lexical Reranking for Biomedical Systematic Review Triage.
 
 ---
 
